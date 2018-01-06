@@ -1,0 +1,18 @@
+{
+  "name": "D3js-practice",
+  "version": "1.0.0",
+  "description": "D3.js practice",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ssosso@hanwha.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ssosso/D3js-practice.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^4.12.2"
+  }
+}

@@ -1,0 +1,7 @@
+extends ../layout/basic.pug
+
+block head
+block body
+	section(class='markdown-body')
+		:markdown-it(linkify html)
+			# DOM 생성 및 데이터 바인딩

@@ -1,0 +1,15 @@
+extends layout/basic.pug
+
+block head
+block body
+	section(class='markdown-body')
+		:markdown-it(linkify html)
+			# Markdown document Test
+	
+			- test
+			- test
+	
+			```js
+			var test;
+			console.log(test);
+			```

@@ -1,5 +1,12 @@
 node.js 서버로 구동되는 웹서비스에서 D3.js 실습 예제들을 제공
 
+#### 프로젝트 구성
+- node.js
+- express.js
+- grunt
+- pug
+- d3.js
+
 #### 구동방법
 - repository clone
 - [node.js](https://nodejs.org/ko/) 다운로드

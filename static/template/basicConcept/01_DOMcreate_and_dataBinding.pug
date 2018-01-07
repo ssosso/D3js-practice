@@ -1,7 +1,177 @@
 extends ../layout/basic.pug
 
 block head
+	link(type='text/css', rel='stylesheet', href='/static/css/practice.css')
 block body
-	section(class='markdown-body')
+	section.markdown-body
 		:markdown-it(linkify html)
 			# DOM 생성 및 데이터 바인딩
+			## DOM 생성
+			데이터를 시각화 하려면 우선 데이터를 표현할 DOM을 동적으로 생성하는 방법을 익혀야 한다. D3는 마치 jQuery와 비슷하게 DOM을 동적으로 생성하도록 도와주는 여러 함수들을 제공한다.<br/><br/>
+			D3를 이용한 DOM생성은 간단하다.
+			- DOM을 생성할 위치를 선택한다.(select)
+			- 선택한 위치 하위에 DOM을 붙인다.(append)
+			```html
+			<body>
+			   <section id="practice1">
+			      <header>practice1</header>
+			   </section>
+			</body>
+			```
+			상기와 같이 body아래 'practice1'이라는 id를 가진 section태그가 이미 존재한다고 하자.<br/>
+			우리는 이 section 태그 하위에 원하는 DOM을 생성해서 붙일 것이다.
+			```js
+			d3.select("#practice1")
+			  .append("p")
+			  .text("TEST!");
+			```
+			d3는 JQuery처럼 선택자를 이용해 DOM을 선택할 수 있다. d3.select 함수에 선택자를 입력하면 원하는 DOM을 찾아와 리턴해준다. 리턴된 DOM에 다음 함수 append가 p태그를 안쪽에 삽입한다. 그리고 마지막으로 text함수가 p태그 안쪽에 텍스트를 입력한다. 이와 같은 javscript 코드가 실행이 되도록 코드를 작성해 놓으면 'practice1' section 태그 아래 p태그가 생성되며 그 안에 'TEST!'라는 텍스트가 입력된 구조를 만들 수 있다.<br/><br/>
+			결과는 아래와 같다.
+			```html
+			<body>
+			   <section id="practice1">
+			      <header>practice1</header>
+			      <p>TEST!</p>
+			   </section>
+			</body>
+			```
+			실제 css까지 입힌 결과는 아래와 같이 보인다.
+	br
+	section#practice1
+		header practice1
+		script(type='text/javascript').
+			d3.select("#practice1")
+				.append("p")
+				.text("TEST!");
+	br
+	br
+	br
+	section.markdown-body
+		:markdown-it(linkify html)
+			## 데이터 바인딩
+			D3를 사용해서 DOM을 동적으로 생성하는 방법을 익혔다. 이제 이 DOM을 데이터와 연관지어야 하는데 이를 '바인딩(binding)'이라고 한다.<br/>
+			이 또한 어렵게 생각할 것이 없다. DOM 생성과정 중간에 3가지만 추가하면 된다.
+			- DOM을 생성할 위치를 선택한다.(select)
+			- __선택한 위치 하위에서 데이터와 연관지을 DOM이 있으면 가져온다.(selectAll)__
+			- __데이터를 세팅한다.(data)__
+			- __데이터를 순회하며(enter)__ 선택한 위치 하위에 DOM을 붙인다.(append)
+
+			한마디로 선택한 위치 하위에 데이터를 순회하면서 DOM을 붙이는 것이다. 예제를 보며 이해해보자.
+			<br/>
+
+			```html
+			<body>
+			   <section id="practice2">
+				  <header>practice2</header>
+			   </section>
+			</body>
+			```
+
+			```js
+			var dataArray = [5,10,15,20,25];
+			d3.select("#practice2")  // DOM을 생성할 위치를 선택
+			  .selectAll("p")        // 선택한 위치 하위에 데이터와 연관지을 DOM이 있으면 가져옴
+			  .data(dataArray)       // 데이터를 세팅
+			  .enter()               // 데이터를 순회
+			  .append("p")           // 선택한 위치 하위에 DOM을 붙임
+			  .text("new");
+			```
+
+			'practice2' section 하위에서 이미 존재하는 p태그를 찾았으나 존재하지 않기 때문에 아무것도 반환하지 않았다.
+			dataArray 데이터를 세팅하고 5개의 데이터를 순회하면서 section 하위에 생성한 p태그 DOM을 붙여넣었다.
+			<br/>따라서 결과는 아래와 같이 나온다.
+	br
+	br
+	section#practice2
+		header practice2
+		script(type='text/javascript').
+			var dataArray = [5,10,15,20,25];
+			d3.select("#practice2")
+				.selectAll("p")
+				.data(dataArray)
+				.enter()
+				.append("p")
+				.text("new");
+
+	br
+	br
+	section.markdown-body
+		:markdown-it(linkify html)
+			여기서 잠깐! 데이터 바인딩이란 데이터와 내가 생성한 DOM을 연관짓는 일인데 데이터는 어디간 것일까?<br/>
+			디버깅 툴에 아래와 같이 한번 입력해보자.
+
+			```js
+			d3.select("#practice2").selectAll("p")._groups[0][0].__data__ + ',' +
+			d3.select("#practice2").selectAll("p")._groups[0][1].__data__ + ',' +
+			d3.select("#practice2").selectAll("p")._groups[0][2].__data__ + ',' +
+			d3.select("#practice2").selectAll("p")._groups[0][3].__data__ + ',' +
+			d3.select("#practice2").selectAll("p")._groups[0][4].__data__
+			```
+			```
+			"5,10,15,20,25"
+			```
+			위와 같은 값이 출력될 것이다.<br/>
+			데이터는 우리가 붙여넣은 p태그 DOM 객체 안에 __data__라는 이름으로 저장되어 있다. 우리의 눈에만 보이지 않을 뿐이라서 나중에 이를 가지고 DOM 객체가 데이터를 표현할 수 있도록 변형시키면 된다.<br/>
+			<br/>
+			마무리 하려고 하였으나 practice2에서 또 1가지 궁금한 것이 생긴다.<br/>
+			section 안에 p태그가 1개도 존재하지 않았는데 만약 이미 p태그가 존재하면 어떻게 될까?<br/>
+			selectAll을 이용해 p태그가 있으면 가져오도록 했었는데 왜 이런 과정을 거치는 걸까?<br/>
+			한번 직접 코드로 짜서 그 이유를 확인해보자.
+			<br/>
+
+			```html
+			<body>
+			   <section id="practice2">
+				  <header>practice2</header>
+				  <p>old</p>
+				  <p>old</p>
+			   </section>
+			</body>
+			```
+
+			```js
+			var dataArray = [5,10,15,20,25];
+			d3.select("#practice2")  // DOM을 생성할 위치를 선택
+			  .selectAll("p")        // 선택한 위치 하위에 데이터와 연관지을 DOM이 있으면 가져옴
+			  .data(dataArray)       // 데이터를 세팅
+			  .enter()               // 데이터를 순회
+			  .append("p")           // 선택한 위치 하위에 DOM을 붙임
+			  .text("new");
+			```
+	br
+	section#practice3
+		header practice3
+		p old
+		p old
+		script(type = 'text/javascript').
+			var dataArray = [5, 10, 15, 20, 25];
+			d3.select("#practice3")
+				.selectAll("p")
+				.data(dataArray)
+				.enter()
+				.append("p")
+				.text("new");
+
+	br
+	br
+	section.markdown-body
+		:markdown-it(linkify html)
+			일단 도전해보니 이미 존재하던 p태그(old)는 그대로 2개가 있다.<br/>
+			그 뒤쪽으로 새로운 p태그(new)가 3개 생성된 것을 볼 수 있다.<br/>
+			결과적으로는 section 아래 데이터 수만큼 5개의 p태그가 출력되게 되었다. 그렇다면 그 안에 바인딩된 데이터는 어떤 모습을 띄고 있을까?<br/>
+			new 텍스트를 가지고 있는 p태그만 데이터를 가지고 있을까? 테스트해보자<br/>
+
+			```js
+			d3.select("#practice3").selectAll("p")._groups[0][0].__data__ + ',' +
+			d3.select("#practice3").selectAll("p")._groups[0][1].__data__ + ',' +
+			d3.select("#practice3").selectAll("p")._groups[0][2].__data__ + ',' +
+			d3.select("#practice3").selectAll("p")._groups[0][3].__data__ + ',' +
+			d3.select("#practice3").selectAll("p")._groups[0][4].__data__
+			```
+			```
+			"5,10,15,20,25"
+			```
+
+			결과는 신기하게도 practice2와 동일하다. 기존에 있는 p태그를 selectAll로 가져오는 이유는 데이터를 순회하면서 바인딩할 때 이미 존재하는 p태그들 또한 그 순회의 한 부분으로 포함시켜 코드를 진행시키기 위함이다. D3를 통해 앞으로 데이터를 시각화하는 작업을 할텐데 이때 그리는 차트, 그래프들은 사용자가 발생시키는 이벤트에 의해 데이터를 동적으로 바인딩하게 된다. 화면을 새로고침하든 버튼을 눌러 데이터만 새로 입히든 어떤 이벤트를 발생시키든 간에 데이터를 다시 그리기 위해서는 DOM을 지우고 생성하고 하는 작업들이 계속된다. 이러한 부분에 있어서 기존에 있던 DOM들을 지우고 새로 생성하는 대신 계속 이용하기 위해서 기존에 있던 DOM를 포함하여 작업을 진행하는 현명한 선택을 한 것이다.(개인적인 생각)
+
+			그럼 한 걸음 더 나아가서 순회하는 데이터 수보다 section 아래 존재하는 p태그가 많으면 어떻게 될까?

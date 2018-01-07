@@ -5,7 +5,8 @@ app.listen(1515, () => console.log('app listening on port 1515!!'));
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/static/template');
 
-app.use(express.static(__dirname + '/static'));
+app.use('/static', express.static(__dirname + '/static'));
+
 app.get('/', (req, res) => {
 	res.render('index');
 });

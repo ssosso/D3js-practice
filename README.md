@@ -15,3 +15,14 @@ node.js 서버로 구동되는 웹서비스에서 D3.js 실습 예제들을 제�
    - grunt
    - node server.js
 - 브라우저에서 http://localhost:1515/ 접속
+
+#### 참고서적
+- D3.js (Scott Murray 지음/변치훈 옮김)
+
+#### 참고 URL
+- 'Pug' template engine Docs
+https://pugjs.org/api/getting-started.html
+- 'Pug' template engine 문법 가이드
+https://codeburst.io/getting-started-with-pug-template-engine-e49cfa291e33
+- node js 웹서비스 만들기
+https://opentutorials.org/course/2136

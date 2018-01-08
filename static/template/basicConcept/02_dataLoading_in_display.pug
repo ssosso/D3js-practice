@@ -1,0 +1,112 @@
+extends ../layout/basic.pug
+
+block head
+    link(type='text/css', rel='stylesheet', href='/static/css/practice.css')
+block body
+    section.markdown-body
+        :markdown-it(linkify html)
+            # 데이터 사용하여 표현하기
+            데이터를 브라우저상 표현할 수 있도록 DOM과 연관짓는 방법은 '[DOM 생성 및 데이터 바인딩](/basicConcept/01_DOMcreate_and_dataBinding)'에서 다루었다. 하지만 아직 데이터는 DOM 속에 숨어있는 상태이다. 이제 숨어있는 데이터를 사용하는 방법을 배워보자.
+
+            ## 데이터 사용하기
+            데이터를 사용한다는 것은 DOM 속에 숨어있는 __data__ 값을 찾아 직접 꺼내어 사용하는 것이 아니다. 데이터 묶음을 순회하면서 데이터 바인딩을 할 때 지금 배울 새로운 방식으로 데이터를 사용할 것이다.
+            ```html
+            <section id="practice6">
+                <header>practice6</header>
+            </section>
+            ```
+            ```js
+            var dataArray = [1,2,30,15,100]
+            d3.select("#practice6")
+              .selectAll("p")
+              .data(dataArray)
+              .enter()
+              .append("p")
+              //.text("new");
+              .text((data) => {
+                return data;
+              });
+            ```
+            위에 예제는 기존 예제와 크게 달라진 부분이 없다. enter함수를 통해 dataArray 안에 있는 데이터를 순회하면서 p태그를 append하는 것까지는 동일하다. 하지만 p태그 안에 text함수로 무언가 입력하는데 기존에 입력하던 string값이 아니다. string을 직접 입력한 것이 아니라 string을 return하는 함수를 매개변수로 넣은 것이다. 이름이 없는 이 함수는 '익명함수'라고 부르며 이 함수의 매개변수를 설정하면 순회하고 있는 데이터를 받아와서 사용할 수 있다. 이 익명함수는 text함수가 방금 막 append한 p태그에 텍스트를 입력할 수 있게 데이터를 그냥 return해주고 있다. text함수가 익명함수가 return한 데이터를 p태그에 넣어줄 것이다. 결과는 아래와 같다.
+    br
+    section#practice6
+        header practice6
+        script.
+            var dataArray = [1,2,30,15,100];
+            d3.select("#practice6")
+                .selectAll("p")
+                .data(dataArray)
+                .enter()
+                .append("p")
+                //.text("new");
+                .text((data) => {
+                    return data;
+                });
+    br
+    section.markdown-body
+        :markdown-it(linkify html)
+            데이터를 사용하는 방법은 익혔으니 데이터값에 따라 DOM을 변형시켜 시각적 표현이 가능하게 해보자.
+            <br/><br/><br/><br/><br/><br/>
+
+            ## 데이터에 따라 스타일 입히기
+            D3를 익히는 이유는 데이터를 시각화하는 작업을 하기 위함이다. 따라서 데이터를 그냥 출력하는 것이 아니라 데이터에 따라 그래프, 도형 등등 시각화 할 수 있는 요소들을 웹페이지에 그려야 한다. 데이터 값이 일정 범위를 넘어서면 데이터가 바인딩된 DOM의 배경색을 변경해보자.
+            ```html
+            <section id="practice7">
+                <header>practice7</header>
+            </section>
+            ```
+            ```js
+            var dataArray = [20,100,40,60];
+            d3.select("#practice7")
+              .selectAll("div")
+              .data(dataArray)
+              .enter()
+              .append("div")
+              .text((data) => {return data})
+              .style("background-color", (data) => {
+                if(data >= 50) {
+                  return "blue";
+                }else{
+                  return "gray";
+                }
+              });
+            ```
+            데이터를 순회하며 DOM을 만들고 section안에 붙여넣은 후, DOM에 style함수를 이용해 배경색을 입히는 코드를 작성하였다. 배경색은 데이터 값이 50보다 같거나 크면 '파란색', 50보다 작으면 '회색'이다. 실제 화면에 완성된 DOM 트리를 보면 상기 코드가 어떻게 영향을 미치는지 알 수 있다.
+            ```html
+            <section id="practice7">
+                <header>practice7</header>
+                <div style="background-color:gray">20</div>
+                <div style="background-color:blue">100</div>
+                <div style="background-color:gray">40</div>
+                <div style="background-color:blue">60</div>
+            </section>
+            ```
+            style함수는 div태그에 inline-style속성에 값을 줄 수 있는 함수이며 상기와 같이 DOM을 형성하기 때문에 데이터에 따라 아래와 같이 배경색을 변경할 수 있게 된다.
+    br
+    section#practice7
+        header practice7
+        script.
+            var dataArray = [20,100,40,60];
+            d3.select("#practice7")
+                .selectAll("div")
+                .data(dataArray)
+                .enter()
+                .append("div")
+                .text((data) => {return data;})
+                .style("background-color", (data) => {
+                    if (data >= 50) {
+                        return "blue";
+                    } else {
+                        return "gray";
+                    }
+                });
+
+    br
+    section.markdown-body
+        :markdown-it(linkify html)
+            <br/><br/><br/><br/><br/><br/>
+
+            ## 정리
+            - 데이터를 사용하려면 데이터를 순회하며 바인딩할 때 원하는 함수의 매개변수로 익명함수를 전달하고 그 익명함수의 첫번째 매개변수를 이용하면 된다.
+            - style 함수는 데이터를 바인딩하는 DOM객체에 css 스타일을 입힐 수 있도록 하는 함수이다.
+            - style 함수에서도 익명함수를 매개변수로 전달하여 데이터값을 반영한 스타일을 입힐 수 있다.

@@ -16,6 +16,12 @@ node.js 서버로 구동되는 웹서비스에서 D3.js 실습 예제들을 제�
    - node server.js
 - 브라우저에서 http://localhost:1515/ 접속
 
+<p align="center">
+	<img width="800px" src="preview.png"/>
+	<br/>
+	<b>구동된 화면</b>
+</p>
+
 ## 참고서적
 - D3.js (Scott Murray 지음/변치훈 옮김)
 
